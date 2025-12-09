@@ -407,8 +407,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 0.30000004, y: 0.100000024, z: 0.3000001}
-  m_Center: {x: 0.000000014901161, y: 0.050000012, z: -0.000000029802322}
+  m_Size: {x: 0.9211111, y: 0.48038054, z: 0.48038054}
+  m_Center: {x: -0.000000029802322, y: 0.24019027, z: 0.000000037252903}
 --- !u!114 &2093543764167531801
 MonoBehaviour:
   m_ObjectHideFlags: 0
