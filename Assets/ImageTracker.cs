@@ -14,6 +14,10 @@ public class ImageTracker : MonoBehaviour
 
     private Dictionary<string, GameObject> spawnedPrefabs = new Dictionary<string, GameObject>();
 
+    private Dictionary<GameObject, GameObject> spawnedObjects = new Dictionary<GameObject, GameObject>();
+
+    private string[] someArray = new string[]{"Image1", "Image2", "Image3"};
+
     private void Start()
     {
         if (trackedImageManager != null)
@@ -27,10 +31,11 @@ public class ImageTracker : MonoBehaviour
     {
         foreach (GameObject prefab in placeablePrefabs)
         {
-            GameObject newPrefab = Instantiate(prefab, Vector3.zero, Quaternion.identity);
+            GameObject newPrefab = Instantiate(prefab);
             newPrefab.name = prefab.name;
             newPrefab.SetActive(false);
             spawnedPrefabs.Add(prefab.name, newPrefab);
+            spawnedObjects.Add(newPrefab, prefab);
         }
     }
 
@@ -59,14 +64,22 @@ public class ImageTracker : MonoBehaviour
             if (trackedImage.trackingState == TrackingState.Limited || trackedImage.trackingState == TrackingState.None)
             {
                 //Disable the associated content
+                spawnedPrefabs[trackedImage.referenceImage.name].transform.SetParent(null);
                 spawnedPrefabs[trackedImage.referenceImage.name].SetActive(false);
             }
             else if (trackedImage.trackingState == TrackingState.Tracking)
             {
+                Debug.Log(trackedImage.gameObject.name + " is being tracked.");
                 //Enable the associated content
-                spawnedPrefabs[trackedImage.referenceImage.name].transform.position = trackedImage.transform.position;
-                spawnedPrefabs[trackedImage.referenceImage.name].transform.rotation = trackedImage.transform.rotation;
-                spawnedPrefabs[trackedImage.referenceImage.name].SetActive(true);
+                if(spawnedPrefabs[trackedImage.referenceImage.name].transform.parent != trackedImage.transform)
+                {
+                    Debug.Log("Enabling associated content: " + spawnedPrefabs[trackedImage.referenceImage.name].name);
+                    spawnedPrefabs[trackedImage.referenceImage.name].transform.SetParent(trackedImage.transform);
+                    spawnedPrefabs[trackedImage.referenceImage.name].transform.localPosition = spawnedObjects[spawnedPrefabs[trackedImage.referenceImage.name]].transform.localPosition;
+                    spawnedPrefabs[trackedImage.referenceImage.name].transform.localRotation = spawnedObjects[spawnedPrefabs[trackedImage.referenceImage.name]].transform.localRotation;
+
+                    spawnedPrefabs[trackedImage.referenceImage.name].SetActive(true);
+                }
             }
         }
     }

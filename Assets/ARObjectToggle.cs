@@ -1,5 +1,7 @@
 using UnityEngine;
+using UnityEngine.UI;
 using TMPro;
+using UnityEngine.XR.Interaction.Toolkit.Interactables;
 
 public class ARObjectToggle : MonoBehaviour
 {
@@ -9,10 +11,41 @@ public class ARObjectToggle : MonoBehaviour
     private Canvas uiElement;
     [SerializeField]
     private TMP_Text text;
+    [SerializeField]
+    private Button toggleButton;
+    [SerializeField]
+    private TMP_Dropdown flavorDropdown;
+    [SerializeField]
+    private TMP_Dropdown sizeDropdown;
+    [SerializeField]
+    private TMP_Dropdown donutTypeDropdown;
+    [SerializeField]
+    private Material[] flavorMaterials;
+    [SerializeField]
+    private Mesh[] donutMeshes;
+    [SerializeField]
+    private XRGrabInteractable xrGrabInteractable;
 
     void Start()
     {
         text.gameObject.SetActive(false);
+        uiElement.enabled = false;
+
+        if (flavorDropdown != null)
+        {
+            flavorDropdown.onValueChanged.AddListener(delegate { UpdateFlavor(); });
+        }
+        
+        if (sizeDropdown != null)
+        {
+            sizeDropdown.onValueChanged.AddListener(delegate { UpdateSize(); });
+        }
+        xrGrabInteractable.enabled = false;
+
+        if (donutTypeDropdown != null)
+        {
+            donutTypeDropdown.onValueChanged.AddListener(delegate { UpdateDonutType(); });
+        }
     }
 
     public void ToggleMeshRenderer()
@@ -20,5 +53,74 @@ public class ARObjectToggle : MonoBehaviour
         meshRenderer.enabled = !meshRenderer.enabled;
         uiElement.gameObject.SetActive(false);
         text.gameObject.SetActive(true);
+    }
+    
+    public void ToggleUIElement()
+    {
+        uiElement.enabled = !uiElement.enabled; // Toggle Canvas enabled state
+        toggleButton.gameObject.SetActive(!uiElement.enabled);
+        xrGrabInteractable.enabled = !xrGrabInteractable.enabled;
+    }
+
+    public void UpdateFlavor()
+    {
+        int selectedFlavorIndex = flavorDropdown.value;
+        if (selectedFlavorIndex >= 0 && selectedFlavorIndex < flavorMaterials.Length)
+        {
+            meshRenderer.material = flavorMaterials[selectedFlavorIndex];
+        }
+    }
+
+    public void UpdateSize()
+    {
+        int selectedSizeIndex = sizeDropdown.value;
+        Vector3 newScale = Vector3.one;
+
+        switch (selectedSizeIndex)
+        {
+            case 0: // Small
+                newScale = Vector3.one * 0.5f;
+                break;
+            case 1: // Medium
+                newScale = Vector3.one * 0.6f;
+                break;
+            case 2: // Large
+                newScale = Vector3.one * 0.7f;
+                break;
+        }
+
+        meshRenderer.transform.localScale = newScale;
+    }
+
+    public void UpdateDonutType()
+    {
+        int selectedTypeIndex = donutTypeDropdown.value;
+        
+        if (donutMeshes != null && selectedTypeIndex >= 0 && selectedTypeIndex < donutMeshes.Length)
+        {
+            MeshFilter meshFilter = GetComponent<MeshFilter>();
+            if (meshFilter != null)
+            {
+                meshFilter.mesh = donutMeshes[selectedTypeIndex];
+            }
+        }
+    }
+
+    void OnDestroy()
+    {
+        if (flavorDropdown != null)
+        {
+            flavorDropdown.onValueChanged.RemoveListener(delegate { UpdateFlavor(); });
+        }
+        
+        if (sizeDropdown != null)
+        {
+            sizeDropdown.onValueChanged.RemoveListener(delegate { UpdateSize(); });
+        }
+        
+        if (donutTypeDropdown != null)
+        {
+            donutTypeDropdown.onValueChanged.RemoveListener(delegate { UpdateDonutType(); });
+        }
     }
 }

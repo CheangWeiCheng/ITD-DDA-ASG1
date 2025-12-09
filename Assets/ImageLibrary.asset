@@ -21,9 +21,29 @@ MonoBehaviour:
       m_GuidLow: 5043878686094907726
       m_GuidHigh: 952740466785548944
     m_SerializedTextureGuid:
-      m_GuidLow: 15763937896718894700
-      m_GuidHigh: 6982234052086023785
-    m_Size: {x: 0.1, y: 0.06326531}
+      m_GuidLow: 15966464645840054574
+      m_GuidHigh: 15626349367619140697
+    m_Size: {x: 0.1, y: 0.1}
     m_SpecifySize: 1
-    m_Name: oscar
+    m_Name: Coffee
+    m_Texture: {fileID: 0}
+  - m_SerializedGuid:
+      m_GuidLow: 5364387747556278561
+      m_GuidHigh: 10551469871996827030
+    m_SerializedTextureGuid:
+      m_GuidLow: 10652223302048475776
+      m_GuidHigh: 14110171793463561402
+    m_Size: {x: 0.1, y: 0.1}
+    m_SpecifySize: 1
+    m_Name: Donut
+    m_Texture: {fileID: 0}
+  - m_SerializedGuid:
+      m_GuidLow: 5658655831526389773
+      m_GuidHigh: 9359445984211886732
+    m_SerializedTextureGuid:
+      m_GuidLow: 0
+      m_GuidHigh: 0
+    m_Size: {x: 0, y: 0}
+    m_SpecifySize: 0
+    m_Name: 
     m_Texture: {fileID: 0}

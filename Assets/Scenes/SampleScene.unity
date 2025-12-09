@@ -1953,6 +1953,7 @@ MonoBehaviour:
   trackedImageManager: {fileID: 331264289}
   placeablePrefabs:
   - {fileID: 1178543035369407230, guid: 3cd31a3f7a050a14e881e320a3ad50d9, type: 3}
+  - {fileID: 1178543035369407230, guid: fbf4a85a55df7174a9a605cd7b5a2740, type: 3}
 --- !u!114 &331264289
 MonoBehaviour:
   m_ObjectHideFlags: 0
