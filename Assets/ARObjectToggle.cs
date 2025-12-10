@@ -71,22 +71,38 @@ public class ARObjectToggle : MonoBehaviour
     public void UpdateSize()
     {
         int selectedSizeIndex = sizeDropdown.value;
-        Vector3 newScale = Vector3.one;
+        Vector3 coffeeScale = Vector3.one;
+        Vector3 donutScale = Vector3.one;
 
         switch (selectedSizeIndex)
         {
             case 0: // Small
-                newScale = Vector3.one * 0.5f;
+                coffeeScale = Vector3.one * 0.5f;
+                donutScale = Vector3.one * (0.5f / 0.5f); // 1.0x
                 break;
             case 1: // Medium
-                newScale = Vector3.one * 0.6f;
+                coffeeScale = Vector3.one * 0.6f;
+                donutScale = Vector3.one * (0.5f / 0.6f); // 0.833x
                 break;
             case 2: // Large
-                newScale = Vector3.one * 0.7f;
+                coffeeScale = Vector3.one * 0.7f;
+                donutScale = Vector3.one * (0.5f / 0.7f); // 0.714x
                 break;
         }
 
-        meshRenderer.transform.localScale = newScale;
+        // Scale coffee mesh
+        meshRenderer.transform.localScale = coffeeScale;
+        
+        // Scale attached donut inversely
+        if (hasAttachedDonut && donutStuff != null)
+        {
+            // Get the donut mesh renderer from donutStuff
+            MeshRenderer donutMesh = donutStuff.GetComponentInChildren<MeshRenderer>();
+            if (donutMesh != null)
+            {
+                donutMesh.transform.localScale = donutScale;
+            }
+        }
     }
 
     public void UpdateDonutType()
