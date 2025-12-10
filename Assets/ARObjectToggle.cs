@@ -26,25 +26,22 @@ public class ARObjectToggle : MonoBehaviour
     [SerializeField]
     private XRGrabInteractable xrGrabInteractable;
 
+    [SerializeField]
+    private GameObject donutStuff;
+    [SerializeField]
+    private bool isCoffee = true;
+    [SerializeField]
+    private bool hasAttachedDonut = false;
+
     void Start()
     {
         text.gameObject.SetActive(false);
         uiElement.enabled = false;
-
-        if (flavorDropdown != null)
-        {
-            flavorDropdown.onValueChanged.AddListener(delegate { UpdateFlavor(); });
-        }
-        
-        if (sizeDropdown != null)
-        {
-            sizeDropdown.onValueChanged.AddListener(delegate { UpdateSize(); });
-        }
         xrGrabInteractable.enabled = false;
 
-        if (donutTypeDropdown != null)
+        if (isCoffee && donutStuff != null)
         {
-            donutTypeDropdown.onValueChanged.AddListener(delegate { UpdateDonutType(); });
+            donutStuff.SetActive(false);
         }
     }
 
@@ -106,21 +103,44 @@ public class ARObjectToggle : MonoBehaviour
         }
     }
 
-    void OnDestroy()
+    void OnTriggerEnter(Collider other)
     {
+        if (isCoffee && !hasAttachedDonut && other.CompareTag("Donut"))
+        {
+            donutStuff.SetActive(true);
+            hasAttachedDonut = true;
+            // Destroy the donut object
+            Destroy(other.gameObject);
+        }
+    }
+
+    public void ResetEverything()
+    {
+        meshRenderer.enabled = true;
+        uiElement.enabled = false;
+        toggleButton.gameObject.SetActive(true);
+        text.gameObject.SetActive(false);
+        xrGrabInteractable.enabled = false;
+
+        // Reset flavor
         if (flavorDropdown != null)
         {
-            flavorDropdown.onValueChanged.RemoveListener(delegate { UpdateFlavor(); });
+            flavorDropdown.value = 0;
+            UpdateFlavor();
         }
-        
+
+        // Reset size
         if (sizeDropdown != null)
         {
-            sizeDropdown.onValueChanged.RemoveListener(delegate { UpdateSize(); });
+            sizeDropdown.value = 1; // Default to Medium
+            UpdateSize();
         }
-        
+
+        // Reset donut type
         if (donutTypeDropdown != null)
         {
-            donutTypeDropdown.onValueChanged.RemoveListener(delegate { UpdateDonutType(); });
+            donutTypeDropdown.value = 0;
+            UpdateDonutType();
         }
     }
 }

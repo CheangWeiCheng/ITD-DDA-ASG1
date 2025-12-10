@@ -172,6 +172,12 @@ namespace UnityEngine.XR.Templates.AR
             set => m_MenuManager = value;
         }
 
+        /// <summary>
+        /// The Back button to enable once the greeting prompt is dismissed.
+        /// </summary>
+        [SerializeField]
+        GameObject m_BackButton;
+
         const int k_NumberOfSurfacesTappedToCompleteGoal = 1;
 
         Queue<Goal> m_OnboardingGoals;
@@ -309,6 +315,7 @@ namespace UnityEngine.XR.Templates.AR
             m_OptionsButton.SetActive(true);
             m_CreateButton.SetActive(true);
             m_MenuManager.enabled = true;
+            m_BackButton.SetActive(true);
 
             for (int i = startingStep; i < m_StepList.Count; i++)
             {
@@ -323,6 +330,38 @@ namespace UnityEngine.XR.Templates.AR
                 }
             }
 
+        }
+
+        /// <summary>
+        /// Brings the player back to the greeting prompt and resets the onboarding process.
+        /// </summary>
+        public void ReturnToGreetingPrompt()
+        {
+            if (m_CurrentCoroutine != null)
+            {
+                StopCoroutine(m_CurrentCoroutine);
+            }
+
+            m_GreetingPrompt.SetActive(true);
+            m_OptionsButton.SetActive(false);
+            m_CreateButton.SetActive(false);
+            m_MenuManager.enabled = false;
+            m_BackButton.SetActive(false);
+
+            foreach (var step in m_StepList)
+            {
+                step.stepObject.SetActive(false);
+            }
+        }
+
+        public void ResetAllARObjects()
+        {
+            ARObjectToggle[] allObjects = FindObjectsByType<ARObjectToggle>(FindObjectsSortMode.None);
+            
+            foreach (ARObjectToggle obj in allObjects)
+            {
+                obj.ResetEverything();
+            }
         }
     }
 }
