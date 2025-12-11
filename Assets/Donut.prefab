@@ -435,8 +435,6 @@ MonoBehaviour:
   - {fileID: 1865056248366311061, guid: 72c4245b8a6716845a8ff57009cb47dc, type: 3}
   - {fileID: 5876722744731809403, guid: 3b24e4bca0e9f804a8cc6419ecebee31, type: 3}
   - {fileID: 9042771077998628582, guid: 33580c443098a1f48b81a74eefd3d6db, type: 3}
-  donutMeshFilter: {fileID: 4795260907686078846}
-  donutMeshRenderer: {fileID: 5995005911315005023}
   xrGrabInteractable: {fileID: 5974824030895938641}
   donutStuff: {fileID: 0}
   isCoffee: 0
@@ -912,7 +910,7 @@ Canvas:
   m_AdditionalShaderChannelsFlag: 25
   m_UpdateRectTransformForStandalone: 0
   m_SortingLayerID: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 1
   m_TargetDisplay: 0
 --- !u!114 &4019945488389194495
 MonoBehaviour:
@@ -1019,7 +1017,9 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Button
+  m_text: 'Select
+
+'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}

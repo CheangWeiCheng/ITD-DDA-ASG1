@@ -107,19 +107,6 @@ namespace UnityEngine.XR.Templates.AR
             set => m_StepList = value;
         }
 
-        [Tooltip("Object Spawner used to detect whether the spawning goal has been achieved.")]
-        [SerializeField]
-        ObjectSpawner m_ObjectSpawner;
-
-        /// <summary>
-        /// Object Spawner used to detect whether the spawning goal has been achieved.
-        /// </summary>
-        public ObjectSpawner objectSpawner
-        {
-            get => m_ObjectSpawner;
-            set => m_ObjectSpawner = value;
-        }
-
         [Tooltip("The greeting prompt Game Object to show when onboarding begins.")]
         [SerializeField]
         GameObject m_GreetingPrompt;
@@ -131,45 +118,6 @@ namespace UnityEngine.XR.Templates.AR
         {
             get => m_GreetingPrompt;
             set => m_GreetingPrompt = value;
-        }
-
-        [Tooltip("The Options Button to enable once the greeting prompt is dismissed.")]
-        [SerializeField]
-        GameObject m_OptionsButton;
-
-        /// <summary>
-        /// The Options Button to enable once the greeting prompt is dismissed.
-        /// </summary>
-        public GameObject optionsButton
-        {
-            get => m_OptionsButton;
-            set => m_OptionsButton = value;
-        }
-
-        [Tooltip("The Create Button to enable once the greeting prompt is dismissed.")]
-        [SerializeField]
-        GameObject m_CreateButton;
-
-        /// <summary>
-        /// The Create Button to enable once the greeting prompt is dismissed.
-        /// </summary>
-        public GameObject createButton
-        {
-            get => m_CreateButton;
-            set => m_CreateButton = value;
-        }
-
-        [Tooltip("The AR Template Menu Manager object to enable once the greeting prompt is dismissed.")]
-        [SerializeField]
-        ARTemplateMenuManager m_MenuManager;
-
-        /// <summary>
-        /// The AR Template Menu Manager object to enable once the greeting prompt is dismissed.
-        /// </summary>
-        public ARTemplateMenuManager menuManager
-        {
-            get => m_MenuManager;
-            set => m_MenuManager = value;
         }
 
         /// <summary>
@@ -202,7 +150,6 @@ namespace UnityEngine.XR.Templates.AR
         void CompleteGoal()
         {
             if (m_CurrentGoal.CurrentGoal == OnboardingGoals.TapSurface)
-                m_ObjectSpawner.objectSpawned -= OnObjectSpawned;
 
             m_CurrentGoal.Completed = true;
             m_CurrentGoalIndex++;
@@ -239,7 +186,6 @@ namespace UnityEngine.XR.Templates.AR
             else if (m_CurrentGoal.CurrentGoal == OnboardingGoals.TapSurface)
             {
                 m_SurfacesTapped = 0;
-                m_ObjectSpawner.objectSpawned += OnObjectSpawned;
             }
         }
 
@@ -312,9 +258,6 @@ namespace UnityEngine.XR.Templates.AR
             m_CurrentGoalIndex = startingStep;
 
             m_GreetingPrompt.SetActive(false);
-            m_OptionsButton.SetActive(true);
-            m_CreateButton.SetActive(true);
-            m_MenuManager.enabled = true;
             m_BackButton.SetActive(true);
 
             for (int i = startingStep; i < m_StepList.Count; i++)
@@ -343,24 +286,11 @@ namespace UnityEngine.XR.Templates.AR
             }
 
             m_GreetingPrompt.SetActive(true);
-            m_OptionsButton.SetActive(false);
-            m_CreateButton.SetActive(false);
-            m_MenuManager.enabled = false;
             m_BackButton.SetActive(false);
 
             foreach (var step in m_StepList)
             {
                 step.stepObject.SetActive(false);
-            }
-        }
-
-        public void ResetAllARObjects()
-        {
-            ARObjectToggle[] allObjects = FindObjectsByType<ARObjectToggle>(FindObjectsSortMode.None);
-            
-            foreach (ARObjectToggle obj in allObjects)
-            {
-                obj.ResetEverything();
             }
         }
     }

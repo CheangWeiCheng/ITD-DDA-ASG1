@@ -129,34 +129,4 @@ public class ARObjectToggle : MonoBehaviour
             Destroy(other.gameObject);
         }
     }
-
-    public void ResetEverything()
-    {
-        meshRenderer.enabled = true;
-        uiElement.enabled = false;
-        toggleButton.gameObject.SetActive(true);
-        text.gameObject.SetActive(false);
-        xrGrabInteractable.enabled = false;
-
-        // Reset flavor
-        if (flavorDropdown != null)
-        {
-            flavorDropdown.value = 0;
-            UpdateFlavor();
-        }
-
-        // Reset size
-        if (sizeDropdown != null)
-        {
-            sizeDropdown.value = 1; // Default to Medium
-            UpdateSize();
-        }
-
-        // Reset donut type
-        if (donutTypeDropdown != null)
-        {
-            donutTypeDropdown.value = 0;
-            UpdateDonutType();
-        }
-    }
 }
