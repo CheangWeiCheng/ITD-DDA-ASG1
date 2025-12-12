@@ -14,6 +14,8 @@ public class ARObjectToggle : MonoBehaviour
     [SerializeField]
     private Button toggleButton;
     [SerializeField]
+    private AudioClip toggleSound;
+    [SerializeField]
     private TMP_Dropdown flavorDropdown;
     [SerializeField]
     private TMP_Dropdown sizeDropdown;
@@ -47,6 +49,10 @@ public class ARObjectToggle : MonoBehaviour
 
     public void ToggleMeshRenderer()
     {
+        if (toggleSound != null)
+        {
+            AudioSource.PlayClipAtPoint(toggleSound, Camera.main.transform.position);
+        }
         meshRenderer.enabled = !meshRenderer.enabled;
         uiElement.gameObject.SetActive(false);
         text.gameObject.SetActive(true);
@@ -54,6 +60,10 @@ public class ARObjectToggle : MonoBehaviour
     
     public void ToggleUIElement()
     {
+        if (toggleSound != null)
+        {
+            AudioSource.PlayClipAtPoint(toggleSound, Camera.main.transform.position);
+        }
         uiElement.enabled = !uiElement.enabled; // Toggle Canvas enabled state
         toggleButton.gameObject.SetActive(!uiElement.enabled);
         xrGrabInteractable.enabled = !xrGrabInteractable.enabled;

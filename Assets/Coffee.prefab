@@ -1036,6 +1036,7 @@ MonoBehaviour:
   uiElement: {fileID: 8205170272694542000}
   text: {fileID: 1799543597242331840}
   toggleButton: {fileID: 875366742052650931}
+  toggleSound: {fileID: 8300000, guid: f4b4731da82ba51449cb57ebf78b882b, type: 3}
   flavorDropdown: {fileID: 290890803869738581}
   sizeDropdown: {fileID: 395135949236825390}
   donutTypeDropdown: {fileID: 0}
@@ -5734,6 +5735,7 @@ MonoBehaviour:
   uiElement: {fileID: 1136021732030619355}
   text: {fileID: 0}
   toggleButton: {fileID: 0}
+  toggleSound: {fileID: 8300000, guid: f4b4731da82ba51449cb57ebf78b882b, type: 3}
   flavorDropdown: {fileID: 8796683433818973758}
   sizeDropdown: {fileID: 0}
   donutTypeDropdown: {fileID: 8891976284142169413}

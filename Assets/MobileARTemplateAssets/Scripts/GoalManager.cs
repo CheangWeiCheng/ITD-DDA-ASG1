@@ -126,6 +126,9 @@ namespace UnityEngine.XR.Templates.AR
         [SerializeField]
         GameObject m_BackButton;
 
+        [SerializeField]
+        AudioClip m_SoundEffectClip;
+
         const int k_NumberOfSurfacesTappedToCompleteGoal = 1;
 
         Queue<Goal> m_OnboardingGoals;
@@ -214,20 +217,16 @@ namespace UnityEngine.XR.Templates.AR
             CompleteGoal();
         }
 
-        void OnObjectSpawned(GameObject spawnedObject)
-        {
-            m_SurfacesTapped++;
-            if (m_CurrentGoal.CurrentGoal == OnboardingGoals.TapSurface && m_SurfacesTapped >= k_NumberOfSurfacesTappedToCompleteGoal)
-            {
-                CompleteGoal();
-            }
-        }
-
         /// <summary>
         /// Triggers a restart of the onboarding/coaching process.
         /// </summary>
         public void StartCoaching()
         {
+            if (m_SoundEffectClip != null)
+            {
+                AudioSource.PlayClipAtPoint(m_SoundEffectClip, Camera.main.transform.position);
+            }
+
             if (m_OnboardingGoals != null)
             {
                 m_OnboardingGoals.Clear();
@@ -280,6 +279,12 @@ namespace UnityEngine.XR.Templates.AR
         /// </summary>
         public void ReturnToGreetingPrompt()
         {
+            // Play sound effect
+            if (m_SoundEffectClip != null)
+            {
+                AudioSource.PlayClipAtPoint(m_SoundEffectClip, Camera.main.transform.position);
+            }
+
             if (m_CurrentCoroutine != null)
             {
                 StopCoroutine(m_CurrentCoroutine);

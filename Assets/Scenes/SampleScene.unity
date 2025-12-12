@@ -1855,6 +1855,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   woodenFrameImage: {fileID: 1684116894}
   floralFrameImage: {fileID: 1087032156}
+  frameChangeSound: {fileID: 8300000, guid: f4b4731da82ba51449cb57ebf78b882b, type: 3}
 --- !u!1 &1481694584
 GameObject:
   m_ObjectHideFlags: 0
@@ -2538,6 +2539,7 @@ MonoBehaviour:
     includeSkipButton: 0
   m_GreetingPrompt: {fileID: 595971757}
   m_BackButton: {fileID: 1796344327}
+  m_SoundEffectClip: {fileID: 8300000, guid: 65e31025d792eaf4c9bcb7378c619993, type: 3}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
