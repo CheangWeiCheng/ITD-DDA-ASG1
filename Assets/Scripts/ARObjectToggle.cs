@@ -2,6 +2,10 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using UnityEngine.XR.Interaction.Toolkit.Interactables;
+using Firebase.Extensions;
+using Firebase.Database;
+using System;
+using System.Collections.Generic;
 
 public class ARObjectToggle : MonoBehaviour
 {
@@ -53,9 +57,15 @@ public class ARObjectToggle : MonoBehaviour
         {
             AudioSource.PlayClipAtPoint(toggleSound, Camera.main.transform.position);
         }
-        meshRenderer.enabled = !meshRenderer.enabled;
-        uiElement.gameObject.SetActive(false);
-        text.gameObject.SetActive(true);
+
+        if (meshRenderer != null)
+            meshRenderer.enabled = !meshRenderer.enabled;
+        
+        if (uiElement != null)
+            uiElement.gameObject.SetActive(false);
+        
+        if (text != null)
+            text.gameObject.SetActive(true);
     }
     
     public void ToggleUIElement()
@@ -138,5 +148,88 @@ public class ARObjectToggle : MonoBehaviour
             // Destroy the donut object
             Destroy(other.gameObject);
         }
+    }
+
+    public void SaveOrderToFirebase()
+    {
+        if (isCoffee)
+        {
+            SaveCoffeeOrder();
+        }
+        else
+        {
+            SaveDonutOrder();
+        }
+    }
+
+    private void SaveCoffeeOrder()
+    {
+        if (flavorDropdown == null || sizeDropdown == null) return;
+        
+        Dictionary<string, object> orderData = new Dictionary<string, object>
+        {
+            { "itemType", "Coffee" },
+            { "flavor", flavorDropdown.options[flavorDropdown.value].text },
+            { "size", sizeDropdown.options[sizeDropdown.value].text },
+            { "timestamp", DateTime.UtcNow.ToString("yyyy-MM-dd HH:mm:ss") }
+        };
+
+        // ADD donut info only if attached
+        if (donutStuff != null)
+        {
+            orderData["hasAttachedDonut"] = true;
+        }
+        else
+        {
+            orderData["hasAttachedDonut"] = false;
+        }
+        
+        SaveToFirebase(orderData);
+    }
+
+    private void SaveDonutOrder()
+    {
+        if (flavorDropdown == null || donutTypeDropdown != null) 
+        {
+            // For donuts, flavorDropdown is required, donutTypeDropdown is optional
+            Dictionary<string, object> orderData = new Dictionary<string, object>
+            {
+                { "itemType", "Donut" },
+                { "flavor", flavorDropdown.options[flavorDropdown.value].text },
+                { "timestamp", DateTime.UtcNow.ToString("yyyy-MM-dd HH:mm:ss") }
+            };
+            
+            if (donutTypeDropdown != null)
+            {
+                orderData["donutType"] = donutTypeDropdown.options[donutTypeDropdown.value].text;
+            }
+            
+            SaveToFirebase(orderData);
+        }
+    }
+
+    private void SaveToFirebase(Dictionary<string, object> orderData)
+    {
+        string orderId = DateTime.UtcNow.ToString("yyyyMMddHHmmssfff");
+        
+        FirebaseManager.DBref.Child("orders").Child(orderId).SetValueAsync(orderData).ContinueWithOnMainThread(task =>
+        {
+            if (task.IsCompleted && !task.IsFaulted)
+            {
+                Debug.Log($"✅ Order saved: {orderId}");
+                
+                // Show what was saved
+                string orderSummary = "Order Summary:\n";
+                foreach (var item in orderData)
+                {
+                    orderSummary += $"{item.Key}: {item.Value}\n";
+                }
+                Debug.Log(orderSummary);
+            }
+            else
+            {
+                Debug.LogError($"❌ Save failed: {task.Exception}");
+            }
+        });
     }
 }

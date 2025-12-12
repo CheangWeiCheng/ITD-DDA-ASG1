@@ -3,300 +3,75 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.InputSystem;
 using UnityEngine.XR.Interaction.Toolkit.Samples.StarterAssets;
+using UnityEngine;
 
-namespace UnityEngine.XR.Templates.AR
+/// <summary>
+/// The GoalManager cycles through a list of Goals, each representing
+/// </summary>
+public class GoalManager : MonoBehaviour
 {
+
+    [Tooltip("The greeting prompt Game Object to show when onboarding begins.")]
+    [SerializeField]
+    GameObject m_GreetingPrompt;
+
+    [SerializeField]
+    GameObject loginPanel;
+
     /// <summary>
-    /// Onboarding goal to be achieved as part of the <see cref="GoalManager"/>.
+    /// The greeting prompt Game Object to show when onboarding begins.
     /// </summary>
-    public struct Goal
+    public GameObject greetingPrompt
     {
-        /// <summary>
-        /// Goal state this goal represents.
-        /// </summary>
-        public GoalManager.OnboardingGoals CurrentGoal;
-
-        /// <summary>
-        /// This denotes whether a goal has been completed.
-        /// </summary>
-        public bool Completed;
-
-        /// <summary>
-        /// Creates a new Goal with the specified <see cref="GoalManager.OnboardingGoals"/>.
-        /// </summary>
-        /// <param name="goal">The <see cref="GoalManager.OnboardingGoals"/> state to assign to this Goal.</param>
-        public Goal(GoalManager.OnboardingGoals goal)
-        {
-            CurrentGoal = goal;
-            Completed = false;
-        }
+        get => m_GreetingPrompt;
+        set => m_GreetingPrompt = value;
     }
 
     /// <summary>
-    /// The GoalManager cycles through a list of Goals, each representing
-    /// an <see cref="GoalManager.OnboardingGoals"/> state to be completed by the user.
+    /// The Back button to enable once the greeting prompt is dismissed.
     /// </summary>
-    public class GoalManager : MonoBehaviour
+    [SerializeField]
+    GameObject m_BackButton;
+
+    [SerializeField]
+    AudioClip m_SoundEffectClip;
+
+    const int k_NumberOfSurfacesTappedToCompleteGoal = 1;
+
+    Coroutine m_CurrentCoroutine;
+
+    /// <summary>
+    /// Triggers a restart of the onboarding/coaching process.
+    /// </summary>
+    public void StartCoaching()
     {
-        /// <summary>
-        /// State representation for the onboarding goals for the GoalManager.
-        /// </summary>
-        public enum OnboardingGoals
+        if (m_SoundEffectClip != null)
         {
-            /// <summary>
-            /// Current empty scene
-            /// </summary>
-            Empty,
-
-            /// <summary>
-            /// Find/scan for AR surfaces
-            /// </summary>
-            FindSurfaces,
-
-            /// <summary>
-            /// Tap a surface to spawn an object
-            /// </summary>
-            TapSurface,
-
-            /// <summary>
-            /// Show movement hints
-            /// </summary>
-            Hints,
-
-            /// <summary>
-            /// Show scale and rotate hints
-            /// </summary>
-            Scale
+            AudioSource.PlayClipAtPoint(m_SoundEffectClip, Camera.main.transform.position);
         }
 
-        /// <summary>
-        /// Individual step instructions to show as part of a goal.
-        /// </summary>
-        [Serializable]
-        public class Step
+        m_GreetingPrompt.SetActive(false);
+        loginPanel.SetActive(false);
+        m_BackButton.SetActive(true);
+    }
+
+    /// <summary>
+    /// Brings the player back to the greeting prompt and resets the onboarding process.
+    /// </summary>
+    public void ReturnToGreetingPrompt()
+    {
+        // Play sound effect
+        if (m_SoundEffectClip != null)
         {
-            /// <summary>
-            /// The GameObject to enable and show the user in order to complete the goal.
-            /// </summary>
-            [SerializeField]
-            public GameObject stepObject;
-
-            /// <summary>
-            /// The text to display on the button shown in the step instructions.
-            /// </summary>
-            [SerializeField]
-            public string buttonText;
-
-            /// <summary>
-            /// This indicates whether to show an additional button to skip the current goal/step.
-            /// </summary>
-            [SerializeField]
-            public bool includeSkipButton;
+            AudioSource.PlayClipAtPoint(m_SoundEffectClip, Camera.main.transform.position);
         }
 
-        [Tooltip("List of Goals/Steps to complete as part of the user onboarding.")]
-        [SerializeField]
-        List<Step> m_StepList = new List<Step>();
-
-        /// <summary>
-        /// List of Goals/Steps to complete as part of the user onboarding.
-        /// </summary>
-        public List<Step> stepList
+        if (m_CurrentCoroutine != null)
         {
-            get => m_StepList;
-            set => m_StepList = value;
+            StopCoroutine(m_CurrentCoroutine);
         }
 
-        [Tooltip("The greeting prompt Game Object to show when onboarding begins.")]
-        [SerializeField]
-        GameObject m_GreetingPrompt;
-
-        /// <summary>
-        /// The greeting prompt Game Object to show when onboarding begins.
-        /// </summary>
-        public GameObject greetingPrompt
-        {
-            get => m_GreetingPrompt;
-            set => m_GreetingPrompt = value;
-        }
-
-        /// <summary>
-        /// The Back button to enable once the greeting prompt is dismissed.
-        /// </summary>
-        [SerializeField]
-        GameObject m_BackButton;
-
-        [SerializeField]
-        AudioClip m_SoundEffectClip;
-
-        const int k_NumberOfSurfacesTappedToCompleteGoal = 1;
-
-        Queue<Goal> m_OnboardingGoals;
-        Coroutine m_CurrentCoroutine;
-        Goal m_CurrentGoal;
-        bool m_AllGoalsFinished;
-        int m_SurfacesTapped;
-        int m_CurrentGoalIndex = 0;
-
-        void Update()
-        {
-            if (Pointer.current != null && Pointer.current.press.wasPressedThisFrame && !m_AllGoalsFinished && (m_CurrentGoal.CurrentGoal == OnboardingGoals.FindSurfaces || m_CurrentGoal.CurrentGoal == OnboardingGoals.Hints || m_CurrentGoal.CurrentGoal == OnboardingGoals.Scale))
-            {
-                if (m_CurrentCoroutine != null)
-                {
-                    StopCoroutine(m_CurrentCoroutine);
-                }
-                CompleteGoal();
-            }
-        }
-
-        void CompleteGoal()
-        {
-            if (m_CurrentGoal.CurrentGoal == OnboardingGoals.TapSurface)
-
-            m_CurrentGoal.Completed = true;
-            m_CurrentGoalIndex++;
-            if (m_OnboardingGoals.Count > 0)
-            {
-                m_CurrentGoal = m_OnboardingGoals.Dequeue();
-                m_StepList[m_CurrentGoalIndex - 1].stepObject.SetActive(false);
-                m_StepList[m_CurrentGoalIndex].stepObject.SetActive(true);
-            }
-            else
-            {
-                m_StepList[m_CurrentGoalIndex - 1].stepObject.SetActive(false);
-                m_AllGoalsFinished = true;
-                return;
-            }
-
-            PreprocessGoal();
-        }
-
-        void PreprocessGoal()
-        {
-            if (m_CurrentGoal.CurrentGoal == OnboardingGoals.FindSurfaces)
-            {
-                m_CurrentCoroutine = StartCoroutine(WaitUntilNextCard(5f));
-            }
-            else if (m_CurrentGoal.CurrentGoal == OnboardingGoals.Hints)
-            {
-                m_CurrentCoroutine = StartCoroutine(WaitUntilNextCard(6f));
-            }
-            else if (m_CurrentGoal.CurrentGoal == OnboardingGoals.Scale)
-            {
-                m_CurrentCoroutine = StartCoroutine(WaitUntilNextCard(8f));
-            }
-            else if (m_CurrentGoal.CurrentGoal == OnboardingGoals.TapSurface)
-            {
-                m_SurfacesTapped = 0;
-            }
-        }
-
-        /// <summary>
-        /// Tells the Goal Manager to wait for a specific number of seconds before completing
-        /// the goal and showing the next card.
-        /// </summary>
-        /// <param name="seconds">The number of seconds to wait before showing the card.</param>
-        /// <returns>Returns an IEnumerator for the current coroutine running.</returns>
-        public IEnumerator WaitUntilNextCard(float seconds)
-        {
-            yield return new WaitForSeconds(seconds);
-
-            if (!Pointer.current.press.wasPressedThisFrame)
-            {
-                m_CurrentCoroutine = null;
-                CompleteGoal();
-            }
-        }
-
-        /// <summary>
-        /// Forces the completion of the current goal and moves to the next.
-        /// </summary>
-        public void ForceCompleteGoal()
-        {
-            CompleteGoal();
-        }
-
-        /// <summary>
-        /// Triggers a restart of the onboarding/coaching process.
-        /// </summary>
-        public void StartCoaching()
-        {
-            if (m_SoundEffectClip != null)
-            {
-                AudioSource.PlayClipAtPoint(m_SoundEffectClip, Camera.main.transform.position);
-            }
-
-            if (m_OnboardingGoals != null)
-            {
-                m_OnboardingGoals.Clear();
-            }
-
-            m_OnboardingGoals = new Queue<Goal>();
-
-            if (!m_AllGoalsFinished)
-            {
-                var findSurfaceGoal = new Goal(OnboardingGoals.FindSurfaces);
-                m_OnboardingGoals.Enqueue(findSurfaceGoal);
-            }
-
-            int startingStep = m_AllGoalsFinished ? 1 : 0;
-
-            var tapSurfaceGoal = new Goal(OnboardingGoals.TapSurface);
-            var translateHintsGoal = new Goal(OnboardingGoals.Hints);
-            var scaleHintsGoal = new Goal(OnboardingGoals.Scale);
-            var rotateHintsGoal = new Goal(OnboardingGoals.Hints);
-
-            m_OnboardingGoals.Enqueue(tapSurfaceGoal);
-            m_OnboardingGoals.Enqueue(translateHintsGoal);
-            m_OnboardingGoals.Enqueue(scaleHintsGoal);
-            m_OnboardingGoals.Enqueue(rotateHintsGoal);
-
-            m_CurrentGoal = m_OnboardingGoals.Dequeue();
-            m_AllGoalsFinished = false;
-            m_CurrentGoalIndex = startingStep;
-
-            m_GreetingPrompt.SetActive(false);
-            m_BackButton.SetActive(true);
-
-            for (int i = startingStep; i < m_StepList.Count; i++)
-            {
-                if (i == startingStep)
-                {
-                    m_StepList[i].stepObject.SetActive(true);
-                    PreprocessGoal();
-                }
-                else
-                {
-                    m_StepList[i].stepObject.SetActive(false);
-                }
-            }
-
-        }
-
-        /// <summary>
-        /// Brings the player back to the greeting prompt and resets the onboarding process.
-        /// </summary>
-        public void ReturnToGreetingPrompt()
-        {
-            // Play sound effect
-            if (m_SoundEffectClip != null)
-            {
-                AudioSource.PlayClipAtPoint(m_SoundEffectClip, Camera.main.transform.position);
-            }
-
-            if (m_CurrentCoroutine != null)
-            {
-                StopCoroutine(m_CurrentCoroutine);
-            }
-
-            m_GreetingPrompt.SetActive(true);
-            m_BackButton.SetActive(false);
-
-            foreach (var step in m_StepList)
-            {
-                step.stepObject.SetActive(false);
-            }
-        }
+        m_GreetingPrompt.SetActive(true);
+        m_BackButton.SetActive(false);
     }
 }
