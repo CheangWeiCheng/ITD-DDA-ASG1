@@ -169,19 +169,38 @@ public class ARObjectToggle : MonoBehaviour
         Dictionary<string, object> orderData = new Dictionary<string, object>
         {
             { "itemType", "Coffee" },
-            { "flavor", flavorDropdown.options[flavorDropdown.value].text },
-            { "size", sizeDropdown.options[sizeDropdown.value].text },
+            { "coffeeFlavor", flavorDropdown.options[flavorDropdown.value].text },
+            { "coffeeSize", sizeDropdown.options[sizeDropdown.value].text },
             { "timestamp", DateTime.UtcNow.ToString("yyyy-MM-dd HH:mm:ss") }
         };
 
         // ADD donut info only if attached
         if (donutStuff != null)
         {
-            orderData["hasAttachedDonut"] = true;
-        }
-        else
-        {
-            orderData["hasAttachedDonut"] = false;
+            // Get the CHILD DONUT'S script and dropdowns
+            ARObjectToggle donutChildScript = donutStuff.GetComponent<ARObjectToggle>();
+            
+            if (donutChildScript != null)
+            {
+                // Get flavor from child donut (might be different from coffee flavor)
+                if (donutChildScript.flavorDropdown != null)
+                {
+                    orderData["donutFlavor"] = donutChildScript.flavorDropdown.options[donutChildScript.flavorDropdown.value].text;
+                }
+                
+                // Get type from child donut
+                if (donutChildScript.donutTypeDropdown != null)
+                {
+                    orderData["donutType"] = donutChildScript.donutTypeDropdown.options[donutChildScript.donutTypeDropdown.value].text;
+                }
+                
+                orderData["itemType"] = "Coffee + Donut Set";
+            }
+            else
+            {
+                // Fallback: just mark as having donut
+                orderData["hasDonut"] = true;
+            }
         }
         
         SaveToFirebase(orderData);
@@ -195,7 +214,7 @@ public class ARObjectToggle : MonoBehaviour
             Dictionary<string, object> orderData = new Dictionary<string, object>
             {
                 { "itemType", "Donut" },
-                { "flavor", flavorDropdown.options[flavorDropdown.value].text },
+                { "donutFlavor", flavorDropdown.options[flavorDropdown.value].text },
                 { "timestamp", DateTime.UtcNow.ToString("yyyy-MM-dd HH:mm:ss") }
             };
             
