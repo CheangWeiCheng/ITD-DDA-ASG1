@@ -31,6 +31,7 @@ This game is a mobile AR app for the cafe Chagee. you can scan QR codes to spawn
 4. (Optional) Select a photo frame with the buttons at the bottom of the screen
 5. (Optional) When scanning the two types of QR codes at once, drag the 2 3D models together to join them together and create a set meal
 6. Press the order button on screen to "take a picture of the models" and place your order at the same time.
+Note: When playing the game in Unity Editor Play mode, use the resolution (1170 x 2532).
 
 ## 🖥️ System Requirements
 Platform: Windows / Android
