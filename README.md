@@ -83,6 +83,9 @@ https://gallery.yopriceville.com/Free-Clipart-Pictures/Decorative-Elements-PNG/W
 *Flower Frame*
 https://creazilla.com/media/clipart/7829964/flower-frame
 
+**Chagee Logo**
+https://www.arc4u.com.sg/tenants/chagee/
+
 ### Audio
 **Menu Selection SFX:**  
 *Free UI Soundpack*  
