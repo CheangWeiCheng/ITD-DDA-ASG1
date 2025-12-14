@@ -3,7 +3,6 @@ using UnityEngine;
 using UnityEngine.XR.ARFoundation;
 using UnityEngine.XR.ARSubsystems;
 
-
 public class ImageTracker : MonoBehaviour
 {
     [SerializeField]
@@ -12,7 +11,11 @@ public class ImageTracker : MonoBehaviour
     [SerializeField]
     private GameObject[] placeablePrefabs;
 
-    private Dictionary<string, GameObject> spawnedPrefabs = new Dictionary<string, GameObject>();
+    // Changed: Store LIST of objects per image type (not single object)
+    private Dictionary<string, List<GameObject>> spawnedPrefabs = new Dictionary<string, List<GameObject>>();
+
+    // Changed: Track which object belongs to which tracked image
+    private Dictionary<TrackableId, GameObject> trackedImageToObject = new Dictionary<TrackableId, GameObject>();
 
     private Dictionary<GameObject, GameObject> spawnedObjects = new Dictionary<GameObject, GameObject>();
 
@@ -29,13 +32,10 @@ public class ImageTracker : MonoBehaviour
 
     void SetupPrefabs()
     {
+        // Initialize lists for each prefab type (but don't instantiate yet)
         foreach (GameObject prefab in placeablePrefabs)
         {
-            GameObject newPrefab = Instantiate(prefab);
-            newPrefab.name = prefab.name;
-            newPrefab.SetActive(false);
-            spawnedPrefabs.Add(prefab.name, newPrefab);
-            spawnedObjects.Add(newPrefab, prefab);
+            spawnedPrefabs.Add(prefab.name, new List<GameObject>());
         }
     }
 
@@ -63,22 +63,62 @@ public class ImageTracker : MonoBehaviour
         {
             if (trackedImage.trackingState == TrackingState.Limited || trackedImage.trackingState == TrackingState.None)
             {
-                //Disable the associated content
-                spawnedPrefabs[trackedImage.referenceImage.name].transform.SetParent(null);
-                spawnedPrefabs[trackedImage.referenceImage.name].SetActive(false);
+                // Disable object for this specific tracked image
+                if (trackedImageToObject.ContainsKey(trackedImage.trackableId))
+                {
+                    GameObject obj = trackedImageToObject[trackedImage.trackableId];
+                    if (obj != null)
+                    {
+                        obj.transform.SetParent(null);
+                        obj.SetActive(false);
+                    }
+                }
             }
             else if (trackedImage.trackingState == TrackingState.Tracking)
             {
                 Debug.Log(trackedImage.gameObject.name + " is being tracked.");
-                //Enable the associated content
-                if(spawnedPrefabs[trackedImage.referenceImage.name].transform.parent != trackedImage.transform)
+                
+                // Check if we already have an object for this specific tracked image
+                if (!trackedImageToObject.ContainsKey(trackedImage.trackableId))
                 {
-                    Debug.Log("Enabling associated content: " + spawnedPrefabs[trackedImage.referenceImage.name].name);
-                    spawnedPrefabs[trackedImage.referenceImage.name].transform.SetParent(trackedImage.transform);
-                    spawnedPrefabs[trackedImage.referenceImage.name].transform.localPosition = spawnedObjects[spawnedPrefabs[trackedImage.referenceImage.name]].transform.localPosition;
-                    spawnedPrefabs[trackedImage.referenceImage.name].transform.localRotation = spawnedObjects[spawnedPrefabs[trackedImage.referenceImage.name]].transform.localRotation;
-
-                    spawnedPrefabs[trackedImage.referenceImage.name].SetActive(true);
+                    // Create NEW object for this tracked image
+                    GameObject prefabToInstantiate = null;
+                    foreach (GameObject prefab in placeablePrefabs)
+                    {
+                        if (prefab.name == trackedImage.referenceImage.name)
+                        {
+                            prefabToInstantiate = prefab;
+                            break;
+                        }
+                    }
+                    
+                    if (prefabToInstantiate != null)
+                    {
+                        GameObject newPrefab = Instantiate(prefabToInstantiate);
+                        newPrefab.name = prefabToInstantiate.name + "_" + trackedImage.trackableId;
+                        newPrefab.SetActive(false);
+                        
+                        // Add to our tracking dictionaries
+                        spawnedPrefabs[trackedImage.referenceImage.name].Add(newPrefab);
+                        spawnedObjects.Add(newPrefab, prefabToInstantiate);
+                        trackedImageToObject.Add(trackedImage.trackableId, newPrefab);
+                        
+                        Debug.Log("Created new object: " + newPrefab.name + " for image: " + trackedImage.trackableId);
+                    }
+                }
+                
+                // Enable/position the object for this tracked image
+                if (trackedImageToObject.ContainsKey(trackedImage.trackableId))
+                {
+                    GameObject obj = trackedImageToObject[trackedImage.trackableId];
+                    if (obj != null && obj.transform.parent != trackedImage.transform)
+                    {
+                        Debug.Log("Enabling associated content: " + obj.name);
+                        obj.transform.SetParent(trackedImage.transform);
+                        obj.transform.localPosition = spawnedObjects[obj].transform.localPosition;
+                        obj.transform.localRotation = spawnedObjects[obj].transform.localRotation;
+                        obj.SetActive(true);
+                    }
                 }
             }
         }

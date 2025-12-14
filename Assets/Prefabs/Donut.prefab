@@ -418,7 +418,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 1178543035369407230}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a821bea20ec7c4e4680ed0103d4ee747, type: 3}
+  m_Script: {fileID: 11500000, guid: 8f49247f9f14cc045b00b90badfab578, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   meshRenderer: {fileID: 5995005911315005023}
@@ -427,7 +427,6 @@ MonoBehaviour:
   toggleButton: {fileID: 875366742052650931}
   toggleSound: {fileID: 8300000, guid: f4b4731da82ba51449cb57ebf78b882b, type: 3}
   flavorDropdown: {fileID: 290890803869738581}
-  sizeDropdown: {fileID: 0}
   donutTypeDropdown: {fileID: 395135949236825390}
   flavorMaterials:
   - {fileID: 2100000, guid: 6ca827b83605cd049bcd8ce307d4c5c8, type: 2}
@@ -437,9 +436,6 @@ MonoBehaviour:
   - {fileID: 5876722744731809403, guid: 3b24e4bca0e9f804a8cc6419ecebee31, type: 3}
   - {fileID: 9042771077998628582, guid: 33580c443098a1f48b81a74eefd3d6db, type: 3}
   xrGrabInteractable: {fileID: 5974824030895938641}
-  donutStuff: {fileID: 0}
-  isCoffee: 0
-  hasAttachedDonut: 0
 --- !u!54 &3292360425706878951
 Rigidbody:
   m_ObjectHideFlags: 0

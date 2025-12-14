@@ -1,0 +1,10 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources xmlns:tools="http://schemas.android.com/tools" tools:keep="@string/firebase_database_url,@string/gcm_defaultSenderId,@string/google_storage_bucket,@string/project_id,@string/google_api_key,@string/google_crash_reporting_api_key,@string/google_app_id">
+  <string name="firebase_database_url" translatable="false">https://dda2025-bf0c0-default-rtdb.asia-southeast1.firebasedatabase.app</string>
+  <string name="gcm_defaultSenderId" translatable="false">291820346561</string>
+  <string name="google_storage_bucket" translatable="false">dda2025-bf0c0.firebasestorage.app</string>
+  <string name="project_id" translatable="false">dda2025-bf0c0</string>
+  <string name="google_api_key" translatable="false">AIzaSyCvJOyM0GVewKKRA__OemVWfosT6_cFzdY</string>
+  <string name="google_crash_reporting_api_key" translatable="false">AIzaSyCvJOyM0GVewKKRA__OemVWfosT6_cFzdY</string>
+  <string name="google_app_id" translatable="false">1:291820346561:android:03e53bb3b7518d22274840</string>
+</resources>
