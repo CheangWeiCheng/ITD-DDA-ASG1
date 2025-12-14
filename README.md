@@ -15,6 +15,10 @@ This game is a mobile AR app for the cafe Chagee. you can scan QR codes to spawn
 4. In Unity Hub:
     1. Select "Open" → "Add project from disk"
     2. Navigate to the cloned repository folder
+5. Ensure these packages are installed:
+    1. AR Foundation
+    2. ARCore XR Plugin
+    3. Firebase Database SDK
 
 **For running the app on an Android phone:**
 1. Download ITDxDDA_ASG1.apk from the Builds folder in the GitHub repository at https://github.com/CheangWeiCheng/ITD-DDA-ASG1.git
@@ -41,8 +45,14 @@ Platform: Windows / Android
 | **RAM**        | 16GB                                          |
 
 **Android**
-| Component      | Recommended                                   |
-|----------------|-----------------------------------------------|
+| Component      | Recommended                                               |
+|----------------|-----------------------------------------------------------|
+| **OS**         | Android 14 (One UI 6.1)                                   |
+| **Chipset**	 | Samsung Exynos 1480 (4 nm)                                |
+| **CPU**        | Octa-core (4x2.75 GHz Cortex-A78 + 4x2.05 GHz Cortex-A55) |
+| **GPU**        | Xclipse 530                                               |
+| **RAM**        | 8 GB to 12 GB                                             |
+| **AR Support** | ARCore compatible                                         |
 
 ## 🕹️ Key Controls
 **Windows**
@@ -55,6 +65,9 @@ Platform: Windows / Android
 ## ⚠️ Known Limitations
 ### Current Bugs
 - The Android build version has a non-functional login button and image tracking does not work (neither of these bugs are present in the Unity Editor version).
+
+### Absent Features
+- Pressing the back button does not reset the AR objects
 
 ## 📚 Asset Credits
 ### Images
@@ -75,4 +88,4 @@ https://creazilla.com/media/clipart/7829964/flower-frame
 https://assetstore.unity.com/packages/audio/sound-fx/free-ui-soundpack-239372
 
 ## Additional Credits
-Deepseek AI was used at times to optimise the code and fix certain errors. However, it was not used to write the code entirely.  
+Deepseek AI was used at times to optimise the code and fix certain errors. However, it was not used to write the code entirely. 
